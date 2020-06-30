@@ -9,7 +9,11 @@
     "jquery": "^3.5.1",
     "moment": "^2.26.0",
     "superagent": "^5.2.2",
-    "sweetalert": "^2.1.2"
+    "sweetalert": "^2.1.2",
+    "datepicker": "0.0.0",
+    "handsontable": "^6",
+    "jquery-timepicker": "^1.3.3",
+    "pikaday": "^1.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",
@@ -22,14 +26,17 @@
     "@kintone/plugin-manifest-validator": "^3.0.4",
     "@kintone/plugin-packer": "^3.0.4",
     "@kintone/plugin-uploader": "^4.0.4",
+    "@types/classnames": "^2.2.10",
     "@types/gapi": "0.0.39",
     "@types/jquery": "^3.3.38",
+    "@types/jquery.timepicker": "^0.3.29",
     "@types/moment": "^2.13.0",
     "@types/sweetalert": "^2.0.4",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
     "@typescript-eslint/parser": "^3.2.0",
     "babel-cli": "^6.26.0",
     "babel-loader": "^8.1.0",
+    "dotenv": "^8.2.0",
     "eslint": "^7.3.1",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
@@ -42,6 +49,7 @@
     "fork-ts-checker-webpack-plugin": "^4.1.6",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.3.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
     "typescript": "^3.9.5",
     "webpack": "^4.43.0",
@@ -52,10 +60,15 @@
     "gen": "kintone-dts-gen --host https://${KINTONE_DOMAIN#*//} -u ${KINTONE_USERNAME} -p ${KINTONE_PASSWORD} --app-id $(cat dest/customize-manifest.json | jq -r '.app') -o src/fields.d.ts",
     "restApiClient_update": "wget -N https://unpkg.com/@kintone/rest-api-client@latest/umd/KintoneRestAPIClient.min.js -P src/desktop/js/",
     "uiComponent_update": "git clone https://github.com/kintone/kintone-ui-component.git node_modules/@kintone/kintone-ui-component ; wget -N https://raw.githubusercontent.com/kintone/kintone-ui-component/master/dist/kintone-ui-component.min.js -P src/desktop/js/ ; wget -N https://raw.githubusercontent.com/kintone/kintone-ui-component/master/dist/kintone-ui-component.min.css -P /src/desktop/css/",
-    "env_encode": "openssl rsautl -encrypt -pubin -inkey $HOME/.ssh/id_rsa_comcre_pkcs8.pub -in .env -out .env_enc",
-    "env_decode": "openssl rsautl -decrypt -inkey $HOME/.ssh/id_rsa_comcre -in .env_enc -out .env",
-    "import_app": "kintone-customize-uploader import --dest-dir ${APP_ID}/dest ${APP_ID}/dest/customize-manifest.json",
-    "upload_app": "kintone-customize-uploader --dest-dir ${APP_ID}/dest ${APP_ID}/dest/customize-manifest.json"
+    "envEncode": "openssl rsautl -encrypt -pubin -inkey $HOME/.ssh/id_rsa_comcre_pkcs8.pub -in .env -out .env_enc",
+    "envDecode": "openssl rsautl -decrypt -inkey $HOME/.ssh/id_rsa_comcre -in .env_enc -out .env",
+    "importApp": "kintone-customize-uploader import --dest-dir ${APP_ID}/dest ${APP_ID}/dest/customize-manifest.json",
+    "uploadApp": "kintone-customize-uploader --dest-dir ${APP_ID}/dest ${APP_ID}/dest/customize-manifest.json",
+    "getfields": "kintone-dts-gen --host https://${KINTONE_HOST}.cybozu.com -u ${KINTONE_USERNAME} -p ${KINTONE_PASSWORD} --app-id ${KINTONE_APP_ID}",
+    "lambaDeploy": "cd $WORKING && zip -r ${FUNC_NAME}.zip ./ -x \"*.zip\" \"node_modules\" \".*\" && aws lambda update-function-code --function-name ${FUNC_NAME} --zip-file fileb://${FUNC_NAME}.zip && rm ${FUNC_NAME}.zip",
+    "upload": "cd $WORKING && npx @kintone/customize-uploader src/customize-manifest.json --dest-dir src",
+    "layerZip": "cd $WORKING && zip -r $(basename `pwd`).zip nodejs "
+
   },
   "repository": {
     "type": "git",
